@@ -1,83 +1,104 @@
-# default_params.py — Module 7 Example: Default Parameters
-# ITP 270 — Programming for Cybersecurity
+# ============================================================
+# default_params.py — Default (Optional) Parameters
+# ITP 270 – Python Programming (Module 7)
+# ============================================================
+# You can give parameters a DEFAULT value.
+# If the caller doesn't provide that argument, the default
+# is used automatically.
+#
+# Syntax:
+#   def function(param1, param2="default_value"):
+#
+# Rules:
+#   - Parameters WITH defaults must come AFTER those without
+#   - The caller can override the default by passing a value
 # ============================================================
 
-# --- What are default parameters? ---
-# A default parameter has a pre-set value. If the caller doesn't
-# provide an argument for it, the default is used. If they do
-# provide one, their value overrides the default.
+# --- Basic default parameter ---
+def greet(name, greeting="Hello"):
+    """Greet a user. Greeting defaults to 'Hello' if not provided."""
+    print(f"{greeting}, {name}!")
 
-# ============================================================
-# EXAMPLE 1: One default parameter
-# ============================================================
+print("--- Default Parameters ---")
+greet("Alice")                  # Uses default: "Hello, Alice!"
+greet("Bob", "Welcome")        # Overrides default: "Welcome, Bob!"
+greet("Charlie", "Good morning")  # "Good morning, Charlie!"
 
-def log_event(message, level="INFO"):
-    """Log a security event with an optional severity level."""
-    print(f"[{level}] {message}")
+# --- Security log with defaults ---
+print()
+print("--- Security Logger ---")
 
-# Using the default (level will be "INFO")
+def log_event(message, level="INFO", source="SYSTEM"):
+    """Log a security event with optional level and source."""
+    print(f"[{level}] ({source}) {message}")
+
+# Call with just the message (uses both defaults)
 log_event("System started")
-# Output: [INFO] System started
+# Output: [INFO] (SYSTEM) System started
 
-# Overriding the default
-log_event("Brute force detected", "CRITICAL")
-# Output: [CRITICAL] Brute force detected
+# Override just the level
+log_event("Failed login attempt", "WARNING")
+# Output: [WARNING] (SYSTEM) Failed login attempt
 
-log_event("User logged in")
-# Output: [INFO] User logged in
+# Override both optional parameters
+log_event("Brute force detected", "CRITICAL", "FIREWALL")
+# Output: [CRITICAL] (FIREWALL) Brute force detected
+
+# --- Password validator with configurable rules ---
+print()
+print("--- Password Validator with Defaults ---")
+
+def check_password(password, min_length=8, require_upper=True):
+    """
+    Check password strength.
+    min_length defaults to 8.
+    require_upper defaults to True.
+    """
+    # Check length
+    if len(password) < min_length:
+        print(f"❌ Too short ({len(password)} chars, need {min_length})")
+        return False
+
+    # Check uppercase (only if required)
+    if require_upper:
+        has_upper = False
+        for char in password:
+            if char.isupper():
+                has_upper = True
+        if not has_upper:
+            print("❌ Missing uppercase letter")
+            return False
+
+    print(f"✅ Password OK")
+    return True
+
+# Use all defaults (min 8, require uppercase)
+check_password("SecurePass")       # ✅ OK
+
+# Use custom minimum length
+check_password("Hi", min_length=4)  # ❌ Too short (2 chars, need 4)
+
+# Disable uppercase requirement
+check_password("simple123", require_upper=False)  # ✅ OK
+
+# --- Using keyword arguments ---
+# You can specify arguments BY NAME (in any order)
+print()
+print("--- Keyword Arguments ---")
+
+def create_user(username, role="user", active=True):
+    """Create a user account with optional role and status."""
+    status = "Active" if active else "Inactive"
+    print(f"Created: {username} | Role: {role} | Status: {status}")
+
+# Positional (in order)
+create_user("alice", "admin", True)
+
+# Keyword (by name — order doesn't matter)
+create_user("bob", active=False, role="analyst")
+
+# Mix of positional and keyword
+create_user("charlie", role="auditor")
 
 print()
-
-# ============================================================
-# EXAMPLE 2: Multiple default parameters
-# ============================================================
-
-def scan_port(ip_address, port=80, timeout=5):
-    """Simulate scanning a port on a target."""
-    print(f"Scanning {ip_address}:{port} (timeout: {timeout}s)")
-
-# All three ways work:
-scan_port("192.168.1.1")                # Uses both defaults
-scan_port("192.168.1.1", 443)           # Overrides port only
-scan_port("192.168.1.1", 443, 10)       # Overrides both
-
-print()
-
-# ============================================================
-# EXAMPLE 3: Rule — defaults must come LAST
-# ============================================================
-
-# ✅ This is correct:
-def create_alert(message, priority="medium", send_email=False):
-    """Create a security alert."""
-    print(f"Alert ({priority}): {message}")
-    if send_email:
-        print("  → Email notification sent")
-
-create_alert("Suspicious login")
-create_alert("Port scan detected", "high")
-create_alert("Server down", "critical", True)
-
-print()
-
-# ❌ This would cause an error (uncomment to see):
-# def bad_function(priority="medium", message):
-#     print(message)
-# SyntaxError: non-default argument follows default argument
-
-# ============================================================
-# EXAMPLE 4: Using keyword arguments
-# ============================================================
-
-# You can also name arguments explicitly:
-def generate_report(title, author="Security Team", format="text"):
-    """Generate a security report header."""
-    print(f"Report: {title}")
-    print(f"Author: {author}")
-    print(f"Format: {format}")
-    print()
-
-# Using keyword arguments — you can skip middle defaults:
-generate_report("Incident Report")
-generate_report("Weekly Scan", format="pdf")    # Skip author, change format
-generate_report("Audit", author="Alice", format="html")
+print("✅ Default parameters complete!")

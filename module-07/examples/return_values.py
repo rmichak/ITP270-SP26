@@ -1,112 +1,132 @@
-# return_values.py — Module 7 Example: Return Values
-# ITP 270 — Programming for Cybersecurity
+# ============================================================
+# return_values.py — Functions That Return Values
+# ITP 270 – Python Programming (Module 7)
+# ============================================================
+# So far, our functions only PRINT things.
+# But functions can also SEND BACK a value using "return".
+#
+# Why return instead of print?
+#   - You can store the result in a variable
+#   - You can use the result in other calculations
+#   - You can pass the result to another function
+#
+# Syntax:
+#   def function_name():
+#       return value
 # ============================================================
 
-# --- What is a return value? ---
-# A return value is data that a function sends BACK to the code
-# that called it. We use the 'return' keyword.
+# --- Simple return ---
+def add(a, b):
+    """Add two numbers and return the result."""
+    result = a + b
+    return result      # Sends the value BACK to the caller
 
-# ============================================================
-# EXAMPLE 1: Returning True or False
-# ============================================================
+# Store the returned value in a variable
+total = add(3, 5)
+print("--- Simple Return ---")
+print(f"add(3, 5) returned: {total}")    # Output: 8
 
-def check_password_length(password):
-    """Check if a password meets minimum length (8 characters)."""
+# You can also use the return value directly
+print(f"add(10, 20) = {add(10, 20)}")    # Output: 30
+
+# --- Return vs Print ---
+print()
+print("--- Return vs Print ---")
+
+# This function PRINTS but returns nothing
+def print_sum(a, b):
+    """Print the sum (does NOT return it)."""
+    print(f"The sum is {a + b}")
+
+# This function RETURNS the sum
+def get_sum(a, b):
+    """Return the sum (does NOT print it)."""
+    return a + b
+
+# See the difference:
+result1 = print_sum(3, 5)   # Prints: "The sum is 8"
+result2 = get_sum(3, 5)     # Prints nothing — just returns 8
+
+print(f"print_sum returned: {result1}")  # None! (no return statement)
+print(f"get_sum returned: {result2}")    # 8 (the actual value)
+
+# --- Return a Boolean ---
+print()
+print("--- Return a Boolean ---")
+
+def is_strong_password(password):
+    """Check if a password is at least 8 characters. Return True/False."""
     if len(password) >= 8:
-        return True         # Sends True back to the caller
+        return True
     else:
-        return False        # Sends False back to the caller
+        return False
 
-# Capture the return value in a variable
-result = check_password_length("Cyber2025!")
-print(f"'Cyber2025!' meets length? {result}")    # True
+# Use the returned Boolean in an if statement
+password1 = "abc"
+password2 = "SecurePass123"
 
-result2 = check_password_length("abc")
-print(f"'abc' meets length? {result2}")           # False
+if is_strong_password(password1):
+    print(f'"{password1}" — Strong password')
+else:
+    print(f'"{password1}" — Weak password')     # This prints
 
+if is_strong_password(password2):
+    print(f'"{password2}" — Strong password')    # This prints
+else:
+    print(f'"{password2}" — Weak password')
+
+# --- Return a string ---
 print()
+print("--- Return a String ---")
 
-# ============================================================
-# EXAMPLE 2: Returning a number
-# ============================================================
-
-def count_digits(text):
-    """Count how many digit characters are in a string."""
-    count = 0
-    for char in text:
-        if char.isdigit():
-            count += 1
-    return count                # Returns an integer
-
-digits = count_digits("P@ss123word456")
-print(f"Digits found: {digits}")    # 6
-
-# You can use the return value directly in conditions:
-if count_digits("P@ss123") >= 2:
-    print("Good — password has enough numbers!")
-
-print()
-
-# ============================================================
-# EXAMPLE 3: Returning a string
-# ============================================================
-
-def classify_threat(score):
-    """Classify a threat level based on a numeric score."""
-    if score >= 8:
+def get_threat_level(score):
+    """Return the threat level based on a numeric score."""
+    if score >= 90:
         return "CRITICAL"
-    elif score >= 5:
-        return "WARNING"
-    elif score >= 3:
-        return "LOW"
+    elif score >= 70:
+        return "HIGH"
+    elif score >= 40:
+        return "MEDIUM"
     else:
-        return "NONE"
+        return "LOW"
 
-# Use the returned string
-level = classify_threat(7)
-print(f"Threat level: {level}")     # WARNING
+# Store the result and use it
+level = get_threat_level(85)
+print(f"Score 85 → Threat Level: {level}")   # HIGH
 
-# Use directly in an f-string
-print(f"Score 9 = {classify_threat(9)}")   # CRITICAL
-print(f"Score 2 = {classify_threat(2)}")   # NONE
+level = get_threat_level(25)
+print(f"Score 25 → Threat Level: {level}")   # LOW
+
+# --- Using return values in calculations ---
+print()
+print("--- Using Returns in Calculations ---")
+
+def calculate_risk(threats, vulnerabilities):
+    """Calculate a simple risk score."""
+    return threats * vulnerabilities
+
+risk = calculate_risk(5, 10)
+print(f"Risk score: {risk}")            # 50
+
+# You can use the return value directly in expressions
+if calculate_risk(8, 12) > 50:
+    print("⚠️  High risk! Take action.")   # This prints (96 > 50)
+
+# --- IMPORTANT: return stops the function ---
+print()
+print("--- Return Stops Execution ---")
+
+def check_age(age):
+    """Check if someone is old enough. Return stops the function."""
+    if age < 0:
+        return "Invalid age"     # Function STOPS here if age < 0
+    if age >= 18:
+        return "Adult"           # Function STOPS here if age >= 18
+    return "Minor"               # Only reached if age is 0-17
+
+print(f"Age -1: {check_age(-1)}")   # Invalid age
+print(f"Age 25: {check_age(25)}")   # Adult
+print(f"Age 10: {check_age(10)}")   # Minor
 
 print()
-
-# ============================================================
-# EXAMPLE 4: What happens without return?
-# ============================================================
-
-def display_status(status):
-    """Print a status message (no return statement)."""
-    print(f"Status: {status}")
-    # No return — this function returns None automatically
-
-result = display_status("Active")
-print(f"Return value: {result}")    # None
-
-print()
-
-# ============================================================
-# EXAMPLE 5: print() vs. return
-# ============================================================
-
-# print() = shows text to the HUMAN on screen
-# return  = sends data back to the PROGRAM
-
-def add_with_print(a, b):
-    """Prints the sum (but doesn't return it)."""
-    print(a + b)        # Shows on screen, but can't be used later
-
-def add_with_return(a, b):
-    """Returns the sum (so the program can use it)."""
-    return a + b        # Sends data back to the caller
-
-# With print — can't use the result
-result1 = add_with_print(5, 3)     # Prints 8
-print(f"result1 = {result1}")       # None — useless!
-
-# With return — can use the result
-result2 = add_with_return(5, 3)     # Nothing printed
-print(f"result2 = {result2}")       # 8 — useful!
-total = result2 * 2
-print(f"Double: {total}")           # 16
+print("✅ Return values complete!")

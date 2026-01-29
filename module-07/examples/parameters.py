@@ -1,59 +1,84 @@
-# parameters.py — Module 7 Example: Parameters and Arguments
-# ITP 270 — Programming for Cybersecurity
+# ============================================================
+# parameters.py — Function Parameters (Arguments)
+# ITP 270 – Python Programming (Module 7)
+# ============================================================
+# Parameters let you pass DATA into a function.
+# This makes functions flexible — they can work with
+# different values each time you call them.
+#
+# Vocabulary:
+#   Parameter = the variable name in the function definition
+#   Argument  = the actual value you pass when calling
+#
+# Example:
+#   def greet(name):     ← "name" is the PARAMETER
+#   greet("Alice")       ← "Alice" is the ARGUMENT
 # ============================================================
 
-# --- Parameters vs. Arguments ---
-# Parameter = variable name in the function DEFINITION (placeholder)
-# Argument  = actual value you pass when CALLING the function
-
-# ============================================================
-# EXAMPLE 1: One parameter
-# ============================================================
-
-def greet_user(username):       # 'username' is the PARAMETER
+# --- One parameter ---
+def greet(name):
     """Greet a user by name."""
-    print(f"Welcome back, {username}!")
+    print(f"Hello, {name}! Welcome to the system.")
 
-greet_user("admin")             # "admin" is the ARGUMENT
-greet_user("analyst_jones")     # "analyst_jones" is the ARGUMENT
+# Call with different arguments each time
+print("--- Single Parameter ---")
+greet("Alice")        # name = "Alice"
+greet("Bob")          # name = "Bob"
+greet("Analyst01")    # name = "Analyst01"
 
+# --- Two parameters ---
 print()
+print("--- Two Parameters ---")
 
-# ============================================================
-# EXAMPLE 2: Two parameters (positional arguments)
-# ============================================================
-
-def log_event(event_type, description):
-    """Log a security event."""
-    print(f"[{event_type}] {description}")
-
-# Order matters! First argument → first parameter
-log_event("WARNING", "Failed login attempt detected")
-log_event("INFO", "User admin logged in successfully")
-log_event("CRITICAL", "Unauthorized access to database")
-
-print()
-
-# ============================================================
-# EXAMPLE 3: Three parameters
-# ============================================================
-
-def create_user(username, role, department):
-    """Display info about a new user account."""
-    print(f"Creating user: {username}")
-    print(f"  Role: {role}")
-    print(f"  Department: {department}")
+def check_access(username, role):
+    """Display a user's role and access information."""
+    print(f"User: {username}")
+    print(f"Role: {role}")
     print()
 
-create_user("alice", "Analyst", "Security Operations")
-create_user("bob", "Admin", "IT Infrastructure")
+# Arguments match parameters in ORDER (positional arguments)
+check_access("alice", "admin")       # username="alice", role="admin"
+check_access("bob", "analyst")       # username="bob", role="analyst"
 
-# ============================================================
-# EXAMPLE 4: What happens with wrong number of arguments?
-# ============================================================
+# --- Three parameters ---
+print("--- Three Parameters ---")
 
-# Uncomment these to see the errors:
-# log_event("WARNING")               # TypeError: missing 1 required argument
-# log_event("WARNING", "msg", "x")   # TypeError: takes 2 positional arguments but 3 were given
+def log_event(timestamp, event_type, message):
+    """Display a formatted log entry."""
+    print(f"[{timestamp}] {event_type}: {message}")
 
-print("--- Parameter Demo Complete ---")
+log_event("2026-01-15 09:00", "INFO", "System started")
+log_event("2026-01-15 09:05", "WARNING", "High CPU usage detected")
+log_event("2026-01-15 09:10", "ERROR", "Failed login attempt")
+
+# --- Parameters are like variables inside the function ---
+print()
+print("--- How Parameters Work ---")
+
+def double(number):
+    """Print a number doubled."""
+    result = number * 2    # "number" holds whatever value was passed in
+    print(f"{number} doubled is {result}")
+
+double(5)     # number = 5, result = 10
+double(12)    # number = 12, result = 24
+double(100)   # number = 100, result = 200
+
+# --- Practical: Password length checker ---
+print()
+print("--- Password Length Checker ---")
+
+def check_password_length(password, min_length):
+    """Check if a password meets the minimum length requirement."""
+    actual_length = len(password)
+    if actual_length >= min_length:
+        print(f"✅ Password OK ({actual_length} chars, need {min_length})")
+    else:
+        print(f"❌ Too short ({actual_length} chars, need {min_length})")
+
+check_password_length("abc", 8)           # Too short
+check_password_length("MyPassword1", 8)   # OK
+check_password_length("Hi", 4)            # Too short
+
+print()
+print("✅ Parameters complete!")

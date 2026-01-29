@@ -1,82 +1,115 @@
 # ============================================================
-# ITP 270 — Module 4: Logical Operators (and, or, not)
+# logical_operators.py — Logical Operators: and, or, not
+# ITP 270 – Python Programming (Module 4)
 # ============================================================
 # Logical operators combine multiple conditions:
-#   and — BOTH must be True
-#   or  — at least ONE must be True
-#   not — reverses True to False (and vice versa)
+#
+#   and  → True only if BOTH conditions are True
+#   or   → True if AT LEAST ONE condition is True
+#   not  → Reverses True to False, or False to True
+#
+# Think of it like security gates:
+#   and = you need BOTH keys to get in
+#   or  = you need at least ONE key
+#   not = flips the lock status
 # ============================================================
 
-# --- The AND Operator ---
-print("=== AND Operator ===")
-print("Both conditions must be True:")
-print("True and True:", True and True)     # True
-print("True and False:", True and False)   # False
-print("False and True:", False and True)   # False
-print("False and False:", False and False) # False
+# =====================
+# AND operator
+# =====================
+# Both conditions must be True → result is True
+print("--- AND Operator ---")
+print("True and True:", True and True)     # True — both are True
+print("True and False:", True and False)   # False — one is False
+print("False and True:", False and True)   # False — one is False
+print("False and False:", False and False) # False — both are False
+
+# Security example: Must have valid username AND valid password
 print()
+username_valid = True
+password_valid = True
 
-# Practical example: login requires both username AND password
-print("--- Login Check (and) ---")
-username = input("Username: ")
-password = input("Password: ")
-
-if username == "admin" and password == "secure123":
-    print("✓ Login successful!")
+if username_valid and password_valid:
+    print("✅ Login successful — both credentials are correct.")
 else:
-    print("✗ Invalid credentials.")
-print()
+    print("❌ Login failed — check your username and password.")
 
-# --- The OR Operator ---
-print("=== OR Operator ===")
-print("At least ONE condition must be True:")
+# =====================
+# OR operator
+# =====================
+# At least one condition must be True → result is True
+print()
+print("--- OR Operator ---")
 print("True or True:", True or True)       # True
-print("True or False:", True or False)     # True
-print("False or True:", False or True)     # True
-print("False or False:", False or False)   # False
+print("True or False:", True or False)     # True — at least one
+print("False or True:", False or True)     # True — at least one
+print("False or False:", False or False)   # False — neither is True
+
+# Security example: Alert if EITHER firewall or antivirus is disabled
 print()
+firewall_disabled = False
+antivirus_disabled = True
 
-# Practical example: user can log in with username OR email
-print("--- Login with Username OR Email ---")
-login = input("Enter username or email: ")
-
-if login == "alice" or login == "alice@nova.edu":
-    print("Welcome, Alice!")
+if firewall_disabled or antivirus_disabled:
+    print("⚠️  SECURITY ALERT: A protection system is disabled!")
 else:
-    print("User not found.")
-print()
+    print("✅ All security systems are active.")
 
-# --- The NOT Operator ---
-print("=== NOT Operator ===")
-print("Reverses the value:")
+# =====================
+# NOT operator
+# =====================
+# Reverses a Boolean value
+print()
+print("--- NOT Operator ---")
 print("not True:", not True)     # False
 print("not False:", not False)   # True
+
+# Security example: Check if user is NOT authorized
 print()
+is_authorized = False
 
-# Practical example: check if user is NOT banned
-is_banned = False
-
-if not is_banned:
-    print("You may access the system.")
+if not is_authorized:
+    print("🚫 Access denied — you are NOT authorized.")
 else:
-    print("Your account has been banned.")
+    print("✅ Access granted.")
+
+# =====================
+# Combining operators
+# =====================
 print()
+print("--- Combined Example: MFA Login ---")
 
-# --- Combining Operators ---
-print("=== Combining Operators ===")
-role = "analyst"
-clearance = 3
-is_active = True
+password_correct = True
+mfa_code_correct = True
+account_locked = False
 
-# Use parentheses to group conditions clearly
-if (role == "admin" or role == "analyst") and clearance >= 3 and is_active:
-    print("Access to security dashboard granted.")
+# All three conditions must be right:
+# password correct AND mfa correct AND account NOT locked
+if password_correct and mfa_code_correct and not account_locked:
+    print("✅ Multi-factor authentication successful!")
+    print("   Welcome to the secure system.")
 else:
-    print("Access denied.")
+    print("❌ Authentication failed.")
 
-# --- KEY POINTS ---
-# 1. and = BOTH True → True (think: two keys for a vault)
-# 2. or = at least ONE True → True (think: two entrances)
-# 3. not = reverses the value (think: opposite day)
-# 4. Use parentheses () to make complex conditions clear
-# 5. Priority: not → and → or (but use parentheses anyway!)
+# =====================
+# Practical: Network access check
+# =====================
+print()
+print("--- Network Access Check ---")
+
+is_employee = True
+is_on_vpn = False
+is_in_office = True
+
+# Access allowed if employee AND (on VPN OR in office)
+if is_employee and (is_on_vpn or is_in_office):
+    print("✅ Network access granted.")
+    print("   Employee verified with valid connection.")
+else:
+    print("❌ Network access denied.")
+
+# Note: Parentheses ( ) control the order of evaluation,
+# just like in math: 2 + 3 * 4 vs (2 + 3) * 4
+
+print()
+print("✅ Logical operators complete!")

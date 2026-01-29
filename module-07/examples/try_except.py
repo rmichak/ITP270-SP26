@@ -1,117 +1,125 @@
-# try_except.py — Module 7 Example: Try-Except Error Handling
-# ITP 270 — Programming for Cybersecurity
 # ============================================================
-
-# --- What is an exception? ---
-# An exception is an error that happens WHILE your program is running.
-# Without handling, your program CRASHES.
+# try_except.py — Basic Exception Handling (try-except)
+# ITP 270 – Python Programming (Module 7)
+# ============================================================
+# Errors happen! Users type wrong things, files go missing,
+# networks go down. Without handling errors, your program
+# CRASHES and the user sees an ugly error message.
+#
 # try-except lets you CATCH errors and handle them gracefully.
-
+#
+# Syntax:
+#   try:
+#       code that MIGHT cause an error
+#   except ErrorType:
+#       code to run if that error happens
+#
+# Think of it like a safety net:
+#   try    = "attempt this risky action"
+#   except = "if it fails, do this instead"
 # ============================================================
-# EXAMPLE 1: Without try-except (program crashes)
-# ============================================================
 
-print("--- Example 1: What happens without try-except ---")
-# Uncomment this to see the crash:
-# number = int("abc")    # ValueError: invalid literal for int()
-# print("This line never runs because the program crashed above")
+# --- Without try-except (crashes!) ---
+print("--- Without Error Handling ---")
+print("If you type 'abc' when asked for a number, the program crashes.")
+print("(We'll skip the crash and show try-except instead.)")
 
-print("(Uncomment the lines above to see the crash)")
+# This would crash if user types non-numeric input:
+# number = int(input("Enter a number: "))
+# print(f"You entered {number}")
+
+# --- With try-except ---
 print()
+print("--- With Error Handling ---")
 
-# ============================================================
-# EXAMPLE 2: Basic try-except
-# ============================================================
-
-print("--- Example 2: Basic try-except ---")
+# Simulating user input (pretend the user typed "abc")
+user_input = "abc"
 
 try:
-    age_input = "twenty"        # Simulating bad user input
-    age = int(age_input)        # This will fail!
-    print(f"You are {age} years old.")
+    # This is the "risky" code — it might fail
+    number = int(user_input)             # ❌ "abc" can't become a number!
+    print(f"You entered: {number}")
 except ValueError:
-    print("That's not a valid number. Please try again.")
+    # This runs ONLY if a ValueError occurs
+    print(f'❌ "{user_input}" is not a valid number!')
+    print("   Please enter a whole number like 5 or 42.")
 
-print("Program keeps running! 🎉")
+print("Program continues running!")  # This always prints — no crash!
+
+# --- Successful try (no error) ---
 print()
+print("--- Successful Try ---")
 
-# ============================================================
-# EXAMPLE 3: Try-except with user input
-# ============================================================
-
-print("--- Example 3: Safe user input ---")
+user_input = "42"
 
 try:
-    port = int(input("Enter a port number: "))
-    print(f"You entered port {port}.")
+    number = int(user_input)             # ✅ "42" CAN become a number
+    print(f"You entered: {number}")      # This runs
 except ValueError:
-    print("Invalid input — please enter a number next time.")
+    print("Not a valid number!")          # This is SKIPPED (no error)
 
+print("Program continues.")
+
+# --- Multiple except blocks ---
 print()
-
-# ============================================================
-# EXAMPLE 4: Try-except INSIDE a function
-# ============================================================
-
-print("--- Example 4: Function with error handling ---")
-
-def get_port_number():
-    """Safely get a port number from the user."""
-    try:
-        port = int(input("Enter port number (1-65535): "))
-        if 1 <= port <= 65535:
-            return port
-        else:
-            print("Port must be between 1 and 65535.")
-            return None
-    except ValueError:
-        print("Invalid input — please enter a number.")
-        return None
-
-result = get_port_number()
-if result:
-    print(f"Scanning port {result}...")
-else:
-    print("No valid port entered.")
-
-print()
-
-# ============================================================
-# EXAMPLE 5: Multiple except blocks
-# ============================================================
-
-print("--- Example 5: Multiple except blocks ---")
+print("--- Multiple Except Blocks ---")
 
 def safe_divide(a, b):
-    """Divide two numbers safely."""
+    """Safely divide two numbers with error handling."""
     try:
         result = a / b
-        return result
+        print(f"{a} / {b} = {result}")
     except ZeroDivisionError:
-        print("Error: Cannot divide by zero!")
-        return None
+        print(f"❌ Cannot divide {a} by zero!")
     except TypeError:
-        print("Error: Both values must be numbers!")
-        return None
+        print(f"❌ Invalid types: can't divide {type(a)} by {type(b)}")
 
-print(f"100 / 4 = {safe_divide(100, 4)}")
-print(f"100 / 0 = {safe_divide(100, 0)}")
-print(f"100 / 'abc' = {safe_divide(100, 'abc')}")
+safe_divide(10, 3)       # Works: 10 / 3 = 3.333...
+safe_divide(10, 0)       # ZeroDivisionError caught
+safe_divide("10", 3)     # TypeError caught
 
+# --- try-except-else-finally ---
 print()
+print("--- Full Structure: try-except-else-finally ---")
 
-# ============================================================
-# EXAMPLE 6: Catching the error message with 'as'
-# ============================================================
-
-print("--- Example 6: Capturing error details ---")
+user_input = "25"
 
 try:
-    value = int("not_a_number")
-except ValueError as e:
-    print(f"Error caught: {e}")
-    # Output: Error caught: invalid literal for int() with base 10: 'not_a_number'
+    # Risky code
+    age = int(user_input)
+except ValueError:
+    # Runs if there's an error
+    print("❌ Invalid age!")
+else:
+    # Runs ONLY if there was NO error
+    print(f"✅ Age is {age}")
+finally:
+    # Runs NO MATTER WHAT (error or not)
+    print("Age check complete.")
+
+# --- Practical: Safe user input function ---
+print()
+print("--- Practical: Safe Input ---")
+
+def get_number(prompt_text, user_response):
+    """
+    Safely convert user input to a number.
+    Returns the number or None if invalid.
+    """
+    try:
+        value = int(user_response)
+        print(f"✅ Got valid number: {value}")
+        return value
+    except ValueError:
+        print(f"❌ '{user_response}' is not a valid number.")
+        return None
+
+# Test it:
+result = get_number("Enter port number: ", "8080")   # Valid
+print(f"Result: {result}")
+
+result = get_number("Enter port number: ", "http")    # Invalid
+print(f"Result: {result}")
 
 print()
-print("--- Try-Except Demo Complete ---")
-print("Key lesson: try-except = safety net for your code! 🥅")
+print("✅ try-except basics complete!")

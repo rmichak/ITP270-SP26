@@ -1,213 +1,190 @@
-# security_functions.py — Module 7 Example: Building Modular Security Tools
-# ITP 270 — Programming for Cybersecurity
+# ============================================================
+# security_functions.py — Cybersecurity Utility Functions
+# ITP 270 – Python Programming (Module 7)
+# ============================================================
+# Real-world example: Functions a security analyst might use.
+# Combines everything from Module 7:
+#   - Functions with parameters and return values
+#   - Default parameters
+#   - Error handling with try-except
 # ============================================================
 
-# This file puts EVERYTHING together:
-# - Functions with parameters and return values
-# - Default parameters
-# - Try-except error handling
-# - Functions calling other functions
 
-from datetime import datetime
-
-
-# ============================================================
-# FUNCTION 1: Validate an IPv4 address
-# ============================================================
-
-def validate_ip(ip_string):
-    """Check if a string is a valid IPv4 address.
-    
-    Args:
-        ip_string: A string like "192.168.1.1"
-    
-    Returns:
-        True if valid IPv4, False otherwise
+# --- Function 1: Password Validator ---
+def validate_password(password, min_length=8):
     """
-    parts = ip_string.split(".")
-    
-    # Must have exactly 4 parts
-    if len(parts) != 4:
+    Check if a password meets security requirements.
+
+    Requirements:
+        - At least min_length characters (default 8)
+        - At least one uppercase letter
+        - At least one digit
+
+    Parameters:
+        password (str): The password to check
+        min_length (int): Minimum required length (default 8)
+
+    Returns:
+        bool: True if password is valid, False otherwise
+    """
+    # Check if password is a string
+    if not isinstance(password, str):
+        print("  ❌ Error: Password must be a string.")
         return False
-    
-    # Each part must be a number 0-255
-    for part in parts:
-        try:
-            num = int(part)
-            if num < 0 or num > 255:
-                return False
-        except ValueError:
-            return False
-    
+
+    # Check length
+    if len(password) < min_length:
+        print(f"  ❌ Too short: {len(password)} chars (need {min_length})")
+        return False
+
+    # Check for uppercase letter
+    has_upper = False
+    for char in password:
+        if char.isupper():
+            has_upper = True
+            break               # Found one — no need to keep checking
+
+    if not has_upper:
+        print("  ❌ Missing uppercase letter.")
+        return False
+
+    # Check for digit
+    has_digit = False
+    for char in password:
+        if char.isdigit():
+            has_digit = True
+            break
+
+    if not has_digit:
+        print("  ❌ Missing digit.")
+        return False
+
+    # All checks passed!
+    print("  ✅ Password meets all requirements.")
     return True
 
 
-# ============================================================
-# FUNCTION 2: Score a password's strength
-# ============================================================
-
-def score_password(password):
-    """Score a password from 0 to 5 based on security criteria.
-    
-    Scoring:
-        +1 for length >= 8
-        +1 for length >= 12
-        +1 for uppercase letter
-        +1 for lowercase letter
-        +1 for digit
-    
-    Returns:
-        Integer score 0-5
+# --- Function 2: IP Address Format Checker ---
+def check_ip_format(ip_address):
     """
-    score = 0
-    
-    if len(password) >= 8:
-        score += 1
-    if len(password) >= 12:
-        score += 1
-    
-    # Check for uppercase
-    for char in password:
-        if char.isupper():
-            score += 1
-            break
-    
-    # Check for lowercase
-    for char in password:
-        if char.islower():
-            score += 1
-            break
-    
-    # Check for digit
-    for char in password:
-        if char.isdigit():
-            score += 1
-            break
-    
-    return score
+    Check if a string looks like a valid IPv4 address.
 
+    A valid IPv4 address has:
+        - Exactly 4 parts separated by dots
+        - Each part is a number between 0 and 255
 
-# ============================================================
-# FUNCTION 3: Classify a port number
-# ============================================================
+    Parameters:
+        ip_address (str): The IP address string to check
 
-def classify_port(port_string):
-    """Classify a port number into its category.
-    
-    Args:
-        port_string: A string that should contain a port number
-    
     Returns:
-        String: "well-known", "registered", "dynamic", or "invalid"
+        bool: True if format is valid, False otherwise
     """
     try:
-        port = int(port_string)
+        # Split the IP address by dots
+        parts = ip_address.split(".")
+
+        # Must have exactly 4 parts
+        if len(parts) != 4:
+            print(f"  ❌ Invalid: Expected 4 octets, got {len(parts)}")
+            return False
+
+        # Each part must be a number between 0 and 255
+        for part in parts:
+            number = int(part)        # Convert to number (may raise ValueError)
+            if number < 0 or number > 255:
+                print(f"  ❌ Invalid: {number} is not between 0-255")
+                return False
+
+        print(f"  ✅ '{ip_address}' is a valid IPv4 format.")
+        return True
+
     except ValueError:
-        return "invalid"
-    
-    if 1 <= port <= 1023:
-        return "well-known"
-    elif 1024 <= port <= 49151:
-        return "registered"
-    elif 49152 <= port <= 65535:
-        return "dynamic"
-    else:
-        return "invalid"
+        # int() failed — a part was not a number
+        print(f"  ❌ Invalid: '{ip_address}' contains non-numeric parts.")
+        return False
 
 
-# ============================================================
-# FUNCTION 4: Log security events (with defaults)
-# ============================================================
-
-def log_event(message, level="INFO"):
-    """Log a security event with timestamp and severity level.
-    
-    Args:
-        message: Description of the event
-        level: Severity level (default: "INFO")
+# --- Function 3: Security Report Generator ---
+def generate_report(title, findings, severity="MEDIUM"):
     """
-    timestamp = datetime.now().strftime("%H:%M:%S")
-    print(f"[{level}] {timestamp} — {message}")
+    Generate a simple security report.
 
+    Parameters:
+        title (str): Report title
+        findings (list): List of finding strings
+        severity (str): Overall severity (default "MEDIUM")
 
-# ============================================================
-# FUNCTION 5: Generate a security report
-# ============================================================
-
-def generate_report(target_ip, password, port):
-    """Generate a security assessment report.
-    
-    Uses validate_ip(), score_password(), classify_port(),
-    and log_event() to build a complete assessment.
-    
-    Args:
-        target_ip: IP address string to validate
-        password: Password string to score
-        port: Port number string to classify
+    Returns:
+        str: The formatted report as a string
     """
-    # Validate IP
-    ip_valid = validate_ip(target_ip)
-    ip_status = "✅ Valid" if ip_valid else "❌ Invalid"
-    
-    # Score password
-    pw_score = score_password(password)
-    strength_labels = {
-        0: "Very Weak ❌",
-        1: "Weak ❌",
-        2: "Fair ⚠️",
-        3: "Moderate 👍",
-        4: "Strong ✅",
-        5: "Very Strong ✅"
-    }
-    pw_label = strength_labels.get(pw_score, "Unknown")
-    
-    # Classify port
-    port_category = classify_port(port)
-    
-    # Display report
-    print()
-    print("=" * 44)
-    print("     SECURITY ASSESSMENT REPORT")
-    print("=" * 44)
-    print(f"  Target IP:     {target_ip} — {ip_status}")
-    print(f"  Password:      {'*' * len(password)}")
-    print(f"  PW Strength:   {pw_score}/5 — {pw_label}")
-    print(f"  Port:          {port} — {port_category}")
-    print("=" * 44)
-    print()
-
-
-# ============================================================
-# MAIN PROGRAM: Interactive security tool
-# ============================================================
-
-def main():
-    """Run the interactive security assessment tool."""
-    print("=" * 44)
-    print("     SECURITY ANALYSIS TOOLKIT v1.0")
-    print("     ITP 270 — Cybersecurity Tools")
-    print("=" * 44)
-    print()
-    
     try:
-        # Get user inputs
-        target = input("Enter target IP address: ")
-        password = input("Enter password to evaluate: ")
-        port = input("Enter port number to check: ")
-        
-        # Generate the report (calls our other functions!)
-        generate_report(target, password, port)
-        
-        # Log the event
-        log_event("Security assessment completed successfully")
-        
-    except KeyboardInterrupt:
-        print("\n")
-        log_event("Assessment cancelled by user", "WARNING")
+        # Build the report string
+        report = ""
+        report += "=" * 50 + "\n"
+        report += f"  SECURITY REPORT: {title}\n"
+        report += f"  Severity: {severity}\n"
+        report += "=" * 50 + "\n"
+
+        if len(findings) == 0:
+            report += "  No findings to report.\n"
+        else:
+            report += f"\n  Findings ({len(findings)} total):\n"
+            report += "-" * 50 + "\n"
+
+            for i, finding in enumerate(findings, start=1):
+                report += f"  {i}. {finding}\n"
+
+        report += "\n" + "=" * 50
+        return report
+
     except Exception as e:
-        log_event(f"Assessment failed: {e}", "ERROR")
+        return f"❌ Error generating report: {e}"
 
 
-# Only run if this file is executed directly (not imported)
-if __name__ == "__main__":
-    main()
+# ============================================================
+# DEMO: Let's test all three functions!
+# ============================================================
+
+print("=" * 50)
+print("  🔐 SECURITY FUNCTIONS DEMO")
+print("=" * 50)
+
+# --- Test validate_password ---
+print()
+print("--- Password Validation ---")
+
+passwords = ["abc", "longpassword", "LongPassword", "Secure123"]
+for pwd in passwords:
+    print(f'\nChecking: "{pwd}"')
+    result = validate_password(pwd)
+    print(f"  Result: {'PASS' if result else 'FAIL'}")
+
+# --- Test check_ip_format ---
+print()
+print("--- IP Address Validation ---")
+
+ips = ["192.168.1.1", "10.0.0.256", "abc.def.ghi.jkl", "172.16.0.1"]
+for ip in ips:
+    print(f'\nChecking: "{ip}"')
+    result = check_ip_format(ip)
+
+# --- Test generate_report ---
+print()
+print("--- Security Report ---")
+
+findings_list = [
+    "Open port 22 (SSH) detected on server",
+    "Outdated SSL certificate on web server",
+    "3 failed login attempts from IP 10.0.0.5"
+]
+
+report = generate_report("Weekly Scan", findings_list, severity="HIGH")
+print(report)
+
+# --- Empty report ---
+print()
+empty_report = generate_report("Monthly Audit", [])
+print(empty_report)
+
+print()
+print("✅ Security functions demo complete!")
