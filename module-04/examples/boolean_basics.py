@@ -1,43 +1,62 @@
 # ============================================================
-# ITP 270 — Module 4: Boolean Basics
+# boolean_basics.py — Introduction to Boolean Values
+# ITP 270 – Python Programming (Module 4)
 # ============================================================
-# Boolean values are either True or False (capitalized!)
-# They are the foundation of all decision-making in programs.
+# Booleans are one of the simplest data types in Python.
+# There are only two Boolean values: True and False
+# They are used to make decisions in your programs.
 # ============================================================
 
-# --- Creating Boolean Variables ---
-# Boolean variables store True or False
-is_logged_in = True
-is_admin = False
-has_permission = True
+# --- Boolean values ---
+# True and False must be capitalized (they are keywords)
+is_logged_in = True       # The user IS logged in
+is_admin = False          # The user is NOT an admin
 
 # Print the values
-print("=== Boolean Values ===")
-print("is_logged_in:", is_logged_in)     # Output: True
-print("is_admin:", is_admin)             # Output: False
-print("has_permission:", has_permission) # Output: True
+print("is_logged_in:", is_logged_in)   # Output: is_logged_in: True
+print("is_admin:", is_admin)           # Output: is_admin: False
 
-# --- Checking the Type ---
-# Boolean values have the type 'bool'
+# --- Check the type ---
+# type() tells us what kind of data we have
 print()
-print("=== Boolean Type ===")
-print("Type of is_logged_in:", type(is_logged_in))   # <class 'bool'>
-print("Type of is_admin:", type(is_admin))             # <class 'bool'>
+print("Type of True:", type(True))             # Output: <class 'bool'>
+print("Type of False:", type(False))           # Output: <class 'bool'>
+print("Type of is_logged_in:", type(is_logged_in))  # Output: <class 'bool'>
 
-# --- Booleans from Comparisons ---
-# When you compare two values, Python gives you a Boolean
+# --- Comparisons produce Boolean results ---
+# When you compare two values, Python gives you True or False
 print()
-print("=== Booleans from Comparisons ===")
+print("--- Comparison Results ---")
+print("5 == 5:", 5 == 5)     # Output: True  (5 equals 5)
+print("5 == 3:", 5 == 3)     # Output: False (5 does not equal 3)
+print("10 > 2:", 10 > 2)     # Output: True  (10 is greater than 2)
+print("1 > 100:", 1 > 100)   # Output: False (1 is NOT greater than 100)
+
+# --- Booleans from expressions ---
+# You can store comparison results in variables
 age = 20
-print("age > 18:", age > 18)           # True (20 is greater than 18)
-print("age == 20:", age == 20)         # True (20 equals 20)
-print("age < 10:", age < 10)           # False (20 is not less than 10)
-
-# --- Important: Capitalization Matters! ---
-# True and False MUST be capitalized
-# true (lowercase) will cause a NameError
+is_adult = age >= 18       # True, because 20 >= 18
 print()
-print("=== Remember ===")
-print("True is a Boolean:", True)
-print("False is a Boolean:", False)
-# print(true)   # This would cause: NameError: name 'true' is not defined
+print("Age:", age)
+print("Is adult?", is_adult)  # Output: Is adult? True
+
+password_length = 4
+is_strong = password_length >= 8   # False, because 4 is NOT >= 8
+print()
+print("Password length:", password_length)
+print("Is strong password?", is_strong)  # Output: Is strong password? False
+
+# --- bool() function ---
+# You can convert other values to Boolean using bool()
+# In Python: 0, empty string "", and None are False
+# Everything else is True
+print()
+print("--- bool() conversions ---")
+print("bool(1):", bool(1))       # Output: True  (any non-zero number)
+print("bool(0):", bool(0))       # Output: False (zero is False)
+print('bool("hello"):', bool("hello"))  # Output: True  (non-empty string)
+print('bool(""):', bool(""))     # Output: False (empty string is False)
+print("bool(None):", bool(None)) # Output: False (None is False)
+
+print()
+print("✅ Boolean basics complete!")
